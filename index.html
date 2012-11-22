@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Flickr Search</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+<body>
+	<div id="wrapper">
+		<h1>Search for recent photos on Flickr</h1>
+	
+		<!-- Holds the search data - not sure if this is necessary -->
+		<div id="searchtest">
+		</div>
+	
+		<!-- This button runs the search function each time it's pressed -->
+		<div class="buttonholder">
+			<button onclick="picSearch()">Click to search!</button>
+		</div>
+	
+		<script>
+		  function jsonFlickrApi(rsp) {
+	    window.rsp = rsp;
+
+				// Check if a photo list is already on the page
+				// (Deletes it if so, for a new search)
+
+				var check = document.getElementById("piclist");
+				if (check != null) {
+					document.body.removeChild(check);
+				}
+
+				// Create a new empty photo list, add it to page
+
+				ul = document.createElement('ul');
+				ul.setAttribute("id", "piclist");
+				document.body.appendChild(ul);
+			
+				// Loop through JSON output from Flickr, adding each photo as a <li> tag
+    
+		    for (var i=0; i < rsp.photos.photo.length; i++) {
+		      photo = rsp.photos.photo[i];
+		      t_url = "http://farm" + photo.farm + ".static.flickr.com/" + 
+		        photo.server + "/" + photo.id + "_" + photo.secret + "_" + "t.jpg";
+		      p_url = "http://www.flickr.com/photos/" + photo.owner + "/" + photo.id;
+		      var s =  '<div class="img_holder"><a href="' + p_url + '">' + '<span></span><img alt="'+ photo.title + 
+		        '"src="' + t_url + '"/>' + '</a></div>';
+					var li = document.createElement('li');
+					li.innerHTML = s;
+					document.getElementById("piclist").appendChild(li);
+		    }
+
+		  }
+		</script>
+
+		<script>
+	
+			// Prompts user for a search term and returns a JSON file
+			// JSON file is an object containing a set number of photos with specified tag
+		
+			function picSearch() {
+				var searchTerm = prompt("Search for?");
+				scriptNode = document.createElement('script');
+				scriptNode.src = "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2475bd47f8e151287026f9ddcbb962b5&tags=" + searchTerm + "&per_page=9&format=json";
+				scriptNode.type = 'text/javascript';
+				document.getElementById('searchtest').appendChild(scriptNode);
+		}
+		</script>
+
+	</div>
+</body>
+
+</html>
